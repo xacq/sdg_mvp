@@ -1,0 +1,4 @@
+Cliente: Juan Perez
+Cedula: 0912345678
+RUC: 0999999999001
+Tarjeta: 4111111111111111

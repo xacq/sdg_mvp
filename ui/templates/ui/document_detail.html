@@ -1,0 +1,143 @@
+{% extends "ui/base.html" %}
+{% block title %}Detalle Documento{% endblock %}
+{% load mask %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h3>Detalle del documento</h3>
+    <div class="text-muted">{{ doc.original_name }}</div>
+  </div>
+  <a class="btn btn-outline-secondary" href="{% url 'documents_list' %}">Volver</a>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="text-muted">Categoría</div>
+        <h5>{{ doc.classified_category.name|default:"—" }}</h5>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="text-muted">Riesgo</div>
+        <h5>{{ doc.risk_score }}</h5>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="text-muted">Cargado</div>
+        <h6>{{ doc.uploaded_at|date:"Y-m-d H:i" }}</h6>
+        <small class="text-muted">por {{ doc.uploaded_by.username }}</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6 mb-4">
+    <div class="card shadow-sm">
+      <div class="card-header"><strong>Hallazgos</strong></div>
+      <div class="card-body">
+        {% if findings %}
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Regla</th>
+                <th>Categoría</th>
+                <th>Coincidencia</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for f in findings %}
+              <tr>
+                <td>{{ f.rule.name }}</td>
+                <td>{{ f.category.name }}</td>
+                <td><code>{{ f.match_text|mask }}</code></td>
+                
+                <td>{{ f.created_at|date:"Y-m-d H:i" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="text-muted">Sin hallazgos.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 mb-4">
+    <div class="card shadow-sm">
+      <div class="card-header"><strong>Alertas</strong></div>
+      <div class="card-body">
+        {% if alerts %}
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Sev</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for a in alerts %}
+              <tr>
+                <td>{{ a.title }}</td>
+                <td>{{ a.severity }}</td>
+                <td>
+                  {% if a.status == "OPEN" and perms.alerts.ack_alert %}
+                    <form method="post" action="{% url 'alert_ack' a.id %}">
+                      {% csrf_token %}
+                      <button class="btn btn-sm btn-outline-danger">
+                        Marcar como atendida
+                      </button>
+                    </form>
+                  {% else %}
+                    <span class="badge text-bg-success">Atendida</span>
+                  {% endif %}
+                </td>
+                <td>{{ a.created_at|date:"Y-m-d H:i" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="text-muted">Sin alertas.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-header"><strong>Auditoría del documento</strong></div>
+  <div class="card-body">
+    {% if events %}
+      <ul class="list-group list-group-flush">
+        {% for e in events %}
+          <li class="list-group-item">
+            <strong>{{ e.event_type }}</strong>
+            <br>
+            <small class="text-muted">
+              {{ e.created_at|date:"Y-m-d H:i" }}{% if e.actor %} | {{ e.actor.username }}{% endif %}
+            </small>
+            {% if e.message %}
+              <div>{{ e.message }}</div>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="text-muted">Sin eventos.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

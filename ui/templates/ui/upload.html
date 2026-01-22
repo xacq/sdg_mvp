@@ -1,0 +1,45 @@
+{% extends "ui/base.html" %}
+{% block title %}Cargar Documento{% endblock %}
+
+{% block content %}
+<h3 class="mb-3">Cargar documento</h3>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        {{ form.original_name.label_tag }}
+        {{ form.original_name }}
+        {% if form.original_name.errors %}
+          <div class="text-danger">{{ form.original_name.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.file.label_tag }}
+        {{ form.file }}
+        {% if form.file.errors %}
+          <div class="text-danger">{{ form.file.errors }}</div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-primary">Cargar y escanear</button>
+      <a class="btn btn-outline-secondary" href="{% url 'documents_list' %}">Cancelar</a>
+    </form>
+  </div>
+</div>
+
+<p class="text-muted mt-3">
+  Tip: para probar, sube un <code>.txt</code> con una cédula (10 dígitos) o RUC (13 dígitos).
+</p>
+{% endblock %}

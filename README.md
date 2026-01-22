@@ -12,6 +12,162 @@ Sistema de Gestión Documental con funciones de Prevención de Pérdida de Datos
 - Panel web operativo: dashboard, lista/detalle de documentos, carga con escaneo, bandeja de alertas y auditoría.
 - API REST autenticada por sesión (DRF) para carga/escaneo y consultas.
 
+SGD-DLP es un sistema web desarrollado como prototipo funcional para la detección, clasificación y gestión de documentos que contienen información sensible, bajo un enfoque de Prevención de Pérdida de Datos (Data Loss Prevention – DLP).
+
+El sistema permite cargar documentos, analizarlos automáticamente mediante reglas configurables (expresiones regulares), generar alertas según el nivel de riesgo identificado y mantener una trazabilidad completa de todas las acciones mediante un módulo de auditoría.
+
+El proyecto tiene un enfoque académico, pero implementa funcionalidades reales orientadas a un usuario operativo, simulando un entorno de producción controlado.
+
+🎯 Objetivos del sistema
+
+Detectar información sensible en documentos digitales.
+
+Clasificar documentos según el tipo de información encontrada.
+
+Generar y gestionar alertas de seguridad.
+
+Proveer trazabilidad completa mediante auditoría.
+
+Aplicar control de accesos basado en roles.
+
+Ofrecer una interfaz visual funcional para operación real.
+
+👤 Roles del sistema
+
+Los roles están definidos conforme al documento académico:
+
+🔹 Administrador
+
+Gestión de políticas (reglas, categorías, umbrales).
+
+Acceso total a documentos, alertas y auditoría.
+
+Gestión de usuarios y roles.
+
+🔹 Responsable de Seguridad
+
+Visualización de documentos y hallazgos completos.
+
+Gestión operativa de alertas (ACK / CLOSE / REOPEN).
+
+Acceso a auditoría global.
+
+🔹 Usuario Técnico
+
+Carga de documentos.
+
+Visualización de documentos.
+
+Visualización de estado de alertas.
+
+No puede atender alertas ni ver auditoría global.
+
+Hallazgos sensibles enmascarados.
+
+🧩 Funcionalidades principales
+📄 Gestión de documentos
+
+Carga de documentos desde interfaz web.
+
+Almacenamiento controlado en el sistema.
+
+Clasificación automática por categoría dominante.
+
+Cálculo de riesgo acumulado.
+
+🔍 Análisis DLP
+
+Escaneo basado en reglas configurables (regex).
+
+Detección de:
+
+Cédulas
+
+RUC
+
+Tarjetas
+
+Identificadores sensibles
+
+Umbrales configurables mediante políticas.
+
+🚨 Gestión de alertas
+
+Generación automática de alertas.
+
+Bandeja global con filtros:
+
+Estado (OPEN / ACK / CLOSED)
+
+Severidad
+
+Documento
+
+Ciclo completo de vida de alertas:
+
+Atender (ACK)
+
+Cerrar
+
+Reabrir
+
+Control de permisos por rol.
+
+📜 Auditoría
+
+Registro de eventos relevantes:
+
+DOC_UPLOADED
+
+TEXT_EXTRACTED
+
+SCAN_DONE
+
+ALERT_CREATED
+
+ALERT_ACK
+
+ALERT_CLOSED
+
+ALERT_REOPENED
+
+Bandeja global de auditoría con filtros por:
+
+Tipo de evento
+
+Usuario
+
+Rango de fechas
+
+Texto / objeto
+
+🖥️ Interfaz de usuario (UI)
+
+Dashboard con métricas clave.
+
+Vista de documentos (lista y detalle).
+
+Bandeja de alertas operativa.
+
+Auditoría global navegable.
+
+Interfaz desarrollada con Django Templates + Bootstrap.
+
+🛠️ Tecnologías utilizadas
+
+Backend: Python 3.10+
+
+Framework: Django + Django REST Framework
+
+Base de datos: SQLite (prototipo)
+
+Frontend: Django Templates + Bootstrap 5
+
+Autenticación: Django Auth (sesiones)
+
+Testing: Pytest + pytest-django
+
+
 ## Arquitectura rápida
 - Django 5.0 + DRF; apps: `policies` (categorías, reglas, config), `documents` (almacenamiento, hallazgos, escaneo), `alerts` (alertas y permisos), `audit` (eventos), `ui` (vistas y plantillas).
 - Base de datos SQLite por defecto; almacenamiento de archivos en `media/docs/`.
